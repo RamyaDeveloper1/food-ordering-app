@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <title>FreshFusion</title>
+        <link rel="icon" href="/images/icon.png">
+        <link rel="stylesheet" href="/styles/style.css">
+        <!-- Link to Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body{
+                background-image: url("/images/slide2.jpeg");
+                background-position: center;
+                background-repeat: no-repeat;
+                background-size: cover;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid clr">
+                <a class="navbar-brand" href="/user/index"><img src="/images/icon.png" width="40px">&nbsp;FreshFusion</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item me-5"><a class="nav-link active text-light" href="/user/index">Home</a></li>
+                        <li class="nav-item me-5 text-light">
+                            <div class="dropdown-container">
+                                <a href="#" class="nav-link categories" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categories
+                                </a>
+
+                                <!-- Categories Dropdown -->
+                                <ul class="dropdown-menu" th:if="${categories != null}">
+                                    <li th:each="category : ${categories}" class="category-item">
+
+                                        <a class="dropdown-item categoryName" th:href="@{'/category/' + ${category.id}}">
+                                            <span th:text="${category.categoryName}"></span>
+                                        </a>
+
+
+                                        <ul class="subcategories" th:if="${category.subCategories != null}">
+                                            <li th:each="subCategory : ${category.subCategories}">
+                                                <a class="dropdown-item" 
+                                                   th:text="${subCategory.subCategoryName}" 
+                                                   th:href="@{'/category/' + ${category.id} + '/subCategory/' + ${subCategory.id}}">
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <p th:if="${categories == null || categories.isEmpty()}">No categories available</p>
+
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/user/about">About us</a></li>
+                        <li class="nav-item me-5 ">
+                            <div class="dropdown-container">
+                                <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                    My Account
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" href="/user/myOrders">My Orders</a></li>
+                                    <li><a class="dropdown-item" href="" id="delete-account-trigger">Delete Account</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" id="logout-trigger" href="">Logout</a></li>
+                                              <li class="nav-item"><a href="/cart/viewCart" class="nav-link"><img src="/images/cartIcon.png" width="30px" class="icon" alt="cartIcon">
+                                Cart<span class="badge bg-danger" th:text="${session.cartItemCount != null ? session.cartItemCount : 0}"></span></a></li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Delete Account Popover -->
+        <div id="delete-account-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">Delete Account</h5>
+                        <p class="card-text">You are about to permanently delete your account. This action cannot be undone. Are you sure?</p>
+                        <form action="/user/dltAccount" method="POST" id="delete-account-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2" id="delete-account-trigger">Delete Account</button>
+                        </form>
+                        <a href="" class="btn btn-secondary btn-lg" id="cancel-delete">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Logout Popover-->
+        <div id="logout-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">User Logout</h5>
+                        <p class="card-text">You are about to log out of your user account. Are you sure?</p>
+                        <form action="/user/logout" method="POST" id="logout-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2">Logout</button>
+                        </form>
+                        <a href="" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="card shadow-sm">
+                        <div class="row no-gutters">
+                            <div class="col-md-6">
+                                <img th:src="@{'/images/foodImages/' + ${food.foodImage}}" class="card-img" th:alt="${food.foodName + ' Image'}" />
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card-body">
+                                    <h5 class="card-title" th:text="${food.foodName}"></h5>
+                                    <p class="card-text" th:text="${food.foodDescription}"></p>
+                                    <p class="card-text">
+                                        <strong th:text="'₹' + ${food.foodPrice}"></strong>
+                                    </p>
+
+                                    <p th:if="${food.isAvailable}" class="text-success">Available</p>
+                                    <p th:unless="${food.isAvailable}" class="text-danger">Out of Stock</p>
+
+                                    <form th:if="${user != null}" th:action="@{/cart/addCart}" method="post">
+                                        <input type="hidden" th:name="foodId" th:value="${food.foodId}" />
+                                        <input type="hidden" th:name="foodName" th:value="${food.foodName}" />
+                                        <input type="hidden" th:name="foodPrice" th:value="${food.foodPrice}" />
+                                        <input type="hidden" th:name="userId" th:value="${user.id}" />
+
+                                        <div class="form-group">
+                                            <label for="quantity">Quantity:</label>
+                                            <input type="number" id="quantity" name="quantity" class="form-control" 
+                                                   min="1" th:value="1" th:max="${food.foodStock}" />
+                                            <small th:if="${food.foodStock == 0}" class="text-danger">Out of Stock</small>
+                                        </div>
+                                        <button type="submit" th:disabled="${food == null or food.isAvailable == false or food.foodStock == 0}"class="btn btn-success btn-block mt-3">
+                                            Add to Cart
+                                        </button>
+                                    </form>
+
+                                    <p th:if="${user == null}">Please log in to add items to your cart<a href="/user/login" class="text-success ">Login here</a></p>
+
+                                    <a href="/user/index" class="btn btn-secondary btn-block mt-3">Continue Shopping</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:src="@{/js/login.js}"></script>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

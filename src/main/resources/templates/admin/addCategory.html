@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FreshFusion</title>
+        <link rel="icon" href="/images/icon.png">
+        <link rel="stylesheet" href="/styles/style.css">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg ">
+            <div class="container-fluid clr ">
+                <a class="navbar-brand" href="/admin/index">FreshFusion</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item me-5"><a class="nav-link" href="/user/index">Home</a></li>
+                        <li class="nav-item me-5"><a class="nav-link active text-light" href="/admin/index">Dashboard</a>
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/category/viewCategory">Categories</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/users">Users</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/orders">Orders</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/viewAdmins"> View Admins</a></li>
+                        <li class="nav-item me-5"><a class="nav-link"  id="logout-trigger" >Logout</a>    </li>
+                        <div id="logout-popover" class="d-none">
+                            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                                <div class="card mt-5" style="width: 18rem;">
+                                    <div class="card-body text-center mt-5">
+                                        <h5 class="card-title mt-5 ">Admin Logout</h5>
+                                        <p class="card-text ">You are about to log out of your admin account. Are you sure?
+                                        </p>
+
+                                        <form action="/admin/adminlogout" method="POST" id="logout-form">
+                                            <button type="submit" class="btn btn-danger btn-lg mb-2">Logout</button>
+                                        </form>
+
+                                        <a href="/admin/addCategory" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </nav> 
+        <!-- Alert Messages -->
+        <div th:if="${error}" class="alert alert-danger " role="alert" id="errorAlert">
+            <p th:text="${error}"></p>
+        </div>
+
+        <div th:if="${message}" class="alert alert-success " role="alert" id="successAlert">
+            <p th:text="${message}"></p>
+        </div> 
+        <!-- category -->
+        <div class="container-fluid p-5 mt-5">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card card-sh">
+                        <div class="card-header text-center">
+                            <p class="fs-4" style="color: rgb(150, 25, 150); font-size: 25px; font-weight: 700;">Add Category</p>
+                        </div>
+                        <div class="card-body">
+                            <form action="/category/addCategory" method="POST" enctype="multipart/form-data">
+                                <div class="form-group">
+                                    <label for="categoryName">Category Name</label>
+                                    <input type="text" class="form-control" name="categoryName" required placeholder="Enter category name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="subCategoryName">SubCategory Name</label>
+                                    <input type="text" class="form-control" name="subCategoryName"  placeholder="Enter sub category name">
+                                </div><br>
+
+                                <div class="form-group form-check">
+                                    <input type="checkbox" class="form-check-input" name="isAvailable" id="isAvailable">
+                                    <label class="form-check-label" for="isAvailable">Available</label>
+                                </div>
+                                <div class="form-group">
+                                    <label for="categoryDescription">Category Description</label>
+                                    <textarea  rows="4"  class="form-control"name="categoryDescription" required placeholder="Enter a description for the category"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="categoryImage">Category Image</label>
+                                    <input type="file" class="form-control" name="categoryImage" >
+                                </div><br>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn " id="but">Add Category</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="card card-sh">
+                        <div class="card-header text-center" style="color: rgb(150, 25, 150); font-weight: 500;">View Category</div>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">SI No</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Sub Category</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Availability</th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="subCategory, iterStat : ${subCategories}">
+                                        <th scope="row" th:text="${iterStat.count}"></th> 
+                                        <td th:text="${subCategory.category.categoryName}"></td> 
+                                        <td th:text="${subCategory.subCategoryName}"></td>
+                                        <td th:text="${subCategory.categoryDescription}"></td>
+                                        <td th:text="${subCategory.isAvailable ? 'true' : 'false'}"></td>
+                                        <td>
+                                            <img th:src="@{'/images/categoryImages/' + ${subCategory.categoryImage}}" alt="Category Image" height="50px">
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/category/editCategory/{id}(id=${subCategory.id})}" class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                                            </a>
+
+                                            <a th:href="@{/category/deleteCategory/{id}(id=${subCategory.id})}" class="btn btn-danger btn-sm">
+                                                <i class="fa-solid fa-trash"></i> Delete
+                                            </a>
+
+
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script th:src="@{/js/index.js}"></script>
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+
+</html>

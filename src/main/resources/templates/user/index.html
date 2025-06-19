@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FreshFusion</title>
+        <link rel="icon" href="/images/icon.png">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/styles/style.css">
+        <link rel="stylesheet" href="/styles/userindex.css">
+        <style>
+            .but {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background-color: rgb(150, 25, 150);
+                color:white;
+                border-radius: 10px;
+            }
+            .cat:hover{
+                color:rgb(150, 25, 150);
+                background-color: white;
+            }
+             .food-div:hover {
+                box-shadow: 3px 3px 5px grey;
+            }
+
+            .food-div .food-image {
+                transition: transform 0.3s ease;
+            }
+
+            .food-div:hover .food-image {
+                transform: scale(1.1);
+            }
+
+
+        </style>
+
+    </head>
+
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid clr">
+                <a class="navbar-brand" href="/user/index"><img src="/images/icon.png" width="40px">&nbsp;FreshFusion</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item me-5"><a class="nav-link active text-light" href="/user/index">Home</a></li>
+                        <li class="nav-item me-5 text-light">
+                            <div class="dropdown-container">
+                                <a href="#" class="nav-link categories" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Categories
+                                </a>
+
+                                <!-- Categories Dropdown -->
+                                <ul class="dropdown-menu" th:if="${categories != null}">
+                                    <li th:each="category : ${categories}" class="category-item">
+
+                                        <a class="dropdown-item categoryName" th:href="@{'/category/' + ${category.id}}">
+                                            <span th:text="${category.categoryName}"></span>
+                                        </a>
+
+
+                                        <ul class="subcategories" th:if="${category.subCategories != null}">
+                                            <li th:each="subCategory : ${category.subCategories}">
+                                                <a class="dropdown-item" 
+                                                   th:text="${subCategory.subCategoryName}" 
+                                                   th:href="@{'/category/' + ${category.id} + '/subCategory/' + ${subCategory.id}}">
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+
+                                <p th:if="${categories == null || categories.isEmpty()}">No categories available</p>
+
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/user/about">About us</a></li>
+                        <li class="nav-item me-5 ">
+                            <div class="dropdown-container">
+                                <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                    My Account
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" href="/cart/myOrders">My Orders</a></li>
+                                    <li><a class="dropdown-item" href="" id="delete-account-trigger">Delete Account</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" id="logout-trigger" href="">Logout</a></li>
+                        <li class="nav-item"><a href="/cart/viewCart" class="nav-link"><img src="/images/cartIcon.png" width="30px" class="icon" alt="cartIcon">
+                                Cart<span class="badge bg-danger" th:text="${session.cartItemCount != null ? session.cartItemCount : 0}"></span></a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Delete Account Popover -->
+        <div id="delete-account-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">Delete Account</h5>
+                        <p class="card-text">You are about to permanently delete your account. This action cannot be undone. Are you sure?</p>
+                        <form action="/user/dltAccount" method="POST" id="delete-account-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2" id="delete-account-trigger">Delete Account</button>
+                        </form>
+                        <a href="/user/index" class="btn btn-secondary btn-lg" id="cancel-delete">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Logout Popover-->
+        <div id="logout-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">User Logout</h5>
+                        <p class="card-text">You are about to log out of your user account. Are you sure?</p>
+                        <form action="/user/logout" method="POST" id="logout-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2">Logout</button>
+                        </form>
+                        <a href="/user/index" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Slideshow -->
+        <div class="carousel-text-container text-center">
+            <h2 class="carousel-heading">Discover the Perfect Harmony of Flavors in Every Dish</h2>
+            <p class="carousel-subheading">Fresh, flavorful, and made just for you.</p>
+        </div>
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3" aria-label="Slide 4"></button>
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/images/slide1.jpeg" class="d-block w-100 carousel-img " alt="Slide 1">
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/slide2.jpeg" class="d-block w-100 carousel-img" alt="Slide 2">
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/slide3.jpeg" class="d-block w-100 carousel-img" alt="Slide 3">
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/slide4.jpeg" class="d-block w-100 carousel-img" alt="Slide 4">
+                </div>
+                <div class="carousel-item">
+                    <img src="/images/slide5.jpeg" class="d-block w-100 carousel-img" alt="Slide 5">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+        <div class="main-container container-fluid">
+            <div class="row">
+                <!-- Categories Container -->
+                <div class="categories-container col-md-3 col-lg-2 p-3">
+                    <h2 class="text-center">All Categories</h2>
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="list-unstyled row">
+                                <li class="nav-item me-5 text-light">
+                                    <div class="dropdown-container">
+                                        <a href="#" class="nav-link categories cat" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <img src="/images/catIcon.png" width="30px" class="icon" alt="cartIcon"> View Categories Here &nbsp;
+                                        </a>
+                                        <!-- Categories Dropdown -->
+                                        <ul class="dropdown-menu" th:if="${categories != null}">
+                                            <li th:each="category : ${categories}" class="category-item">
+                                                <a class="dropdown-item categoryName" th:href="@{'/category/' + ${category.id}}">
+                                                    <span th:text="${category.categoryName}"></span>
+                                                </a>
+
+
+                                                <ul class="subcategories" th:if="${category.subCategories != null}">
+                                                    <li th:each="subCategory : ${category.subCategories}">
+                                                        <a class="dropdown-item" 
+                                                           th:text="${subCategory.subCategoryName}" 
+                                                           th:href="@{'/category/' + ${category.id} + '/subCategory/' + ${subCategory.id}}">
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+
+                                        <li th:if="${categories == null || categories.isEmpty()}">No categories available</li>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-9 col-lg-10 pro-container" id="food-container">
+                    <div th:each="food : ${foods}" class="food food-div">
+                        <a th:href="@{'/food/individual/' + ${food.foodId}}" class="card food-card" style="text-decoration: none; cursor: pointer;">
+                            <img th:src="@{'/images/foodImages/' + ${food.foodImage}}" th:alt="${food.foodName + ' Image'}" class="food-image" />
+                            <h3 th:text="${food.foodName}"></h3>
+                            <p th:text="${food.foodDescription}" class="para fs-5 text-dark"></p>
+                            <p th:text="'₹' + ${food.foodPrice}" class="rupees fs-5 text-success"></p>
+                            <p th:unless="${food.isAvailable}" class="food-availability out-of-stock">Out of Stock</p>
+                            <a th:href="@{/food/details/{foodId}(foodId=${food.foodId})}" class=" btn but" >View Details</a>
+
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bootstrap JS and dependencies -->
+        <script th:src="@{/js/index.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>

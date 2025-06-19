@@ -1,0 +1,120 @@
+
+body {
+    overflow: hidden;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+.container a {
+    color: white;
+}
+.container h1, .container p{
+    color: white !important;
+}
+
+.container a span {
+    color: rgb(238, 41, 238);
+    text-shadow: 1px 1px 2px rgb(251, 246, 251);
+    text-decoration: underline;
+}
+
+.main-sec {
+    background-image: url("/images/back.jpeg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+        color: white !important;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    animation: ani1 2s ease-out;
+}
+
+@keyframes ani1 {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.container {
+    margin: 150px auto;
+    text-align: center;
+    animation: ani2 1.5s ease-out;
+}
+
+@keyframes ani2 {
+    0% {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+h1 {
+    font-size: 3em;
+    animation: ani3 1s ease-out;
+}
+
+@keyframes ani3 {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+p {
+    font-size: 1.2em;
+    animation: ani4 2s ease-out;
+}
+
+@keyframes ani4 {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.start-btn {
+    background-color: rgb(27, 181, 27)!important;
+    transition: all 0.3s;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.start-btn:hover {
+    background-color: white;
+    border: 1px solid rgb(18, 149, 18);
+    color: rgb(18, 122, 18);
+    cursor: pointer;
+}
+
+.btn-outline-custom {
+    border: 2px solid white !important;
+    color: white !important;
+    font-size: 1.2em;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+    background-color: white;
+    color: rgb(18, 149, 18);
+}
+
+.navbar-toggler {
+    border: 2px solid white;
+}
+
+

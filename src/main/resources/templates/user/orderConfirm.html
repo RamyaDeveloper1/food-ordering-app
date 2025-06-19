@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - FreshFusion</title>
+    <link rel="icon" href="/images/icon.png">
+    <link rel="stylesheet" href="/styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            background-image: url("/images/back.jpeg");
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        nav{
+            z-index: 11;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px grey;
+            margin-top: 60px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: ani 2s ease-in-out;
+            position: relative;
+        }
+
+        @keyframes ani {
+            0% {
+                top: -700px;
+            }
+
+            100% {
+               top: 0;
+            }
+        }
+
+        .box {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        h2 {
+            color: #28a745;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        h4,
+        h5 {
+            color: rgb(150, 25, 150);
+            font-weight: 600;
+        }
+
+        table th,
+        table td {
+            text-align: center;
+        }
+
+        .thank-you-message {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .links a {
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-left: 5px;
+        }
+
+        .links a:nth-child(2) {
+            margin-left: 80%;
+        }
+
+        .links a:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid clr">
+            <a class="navbar-brand" href="/user/index"><img src="/images/icon.png" width="40px">&nbsp;FreshFusion</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item me-5"><a class="nav-link  text-light" href="/user/index">Home</a></li>
+                       
+                    <li class="nav-item me-5"><a class="nav-link" href="/user/about">About us</a></li>
+                    <li class="nav-item me-5 ">
+                        <div class="dropdown-container">
+                            <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                My Account
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                                <li><a class="dropdown-item" href="/cart/myOrders">My Orders</a></li>
+                                <li><a class="dropdown-item" href="" id="delete-account-trigger">Delete Account</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li class="nav-item me-5"><a class="nav-link" id="logout-trigger" href="">Logout</a></li>
+                    <li class="nav-item"><a href="/cart/viewCart" class="nav-link"><img src="/images/cartIcon.png"
+                                width="30px" class="icon" alt="cartIcon">
+                            Cart</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+     <!-- Delete Account Popover -->
+        <div id="delete-account-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">Delete Account</h5>
+                        <p class="card-text">You are about to permanently delete your account. This action cannot be undone. Are you sure?</p>
+                        <form action="/user/dltAccount" method="POST" id="delete-account-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2" id="delete-account-trigger">Delete Account</button>
+                        </form>
+                        <a href="/user/index" class="btn btn-secondary btn-lg" id="cancel-delete">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Logout Popover-->
+        <div id="logout-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">User Logout</h5>
+                        <p class="card-text">You are about to log out of your user account. Are you sure?</p>
+                        <form action="/user/logout" method="POST" id="logout-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2">Logout</button>
+                        </form>
+                        <a href="" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Order Confirmation -->
+    <div class="container ">
+        <h2>Order Placed Successfully!</h2>
+        <div class="order-info">
+            <h5>Order Number: <span th:text="${order.orderId}"></span></h5>
+            <h5>Total Amount: ₹<span th:text="${order.totalPrice}"></span></h5>
+        </div>
+        <div class="box">
+            <div class="box1">
+
+                <h4 class="mt-2">Order Details</h4>
+                <table class="table table-bordered table-striped mt-2">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Food Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${order.orderItems}">
+                            <td th:text="${item.foodName}"></td>
+                            <td th:text="${item.price}"></td>
+                            <td th:text="${item.quantity}"></td>
+                            <td th:text="${item.totalPrice}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="box2">
+                <h5 class="mt-2">Shipping Information</h5>
+                <div class="shipping-info">
+                    <div class="row">
+                        <p class="col-md-6" ><strong>Name:</strong><span th:text="${order.name}"></span> </p>
+                        <p class="col-md-6" ><strong>Address:</strong> <span th:text="${order.address}"></span></p>
+                    </div>
+                    <div class="row">
+                        <p class="col-md-6 " ><strong>City:</strong> <span th:text="${order.city}"></span></p>
+                        <p class="col-md-6" ><strong>Pin Code:</strong> <span th:text="${order.pincode}"></span></p>
+                    </div>
+                    <p><strong>Phone Number:</strong><span th:text="${order.mobile}"></span></p>
+                </div>
+            </div>
+        </div>
+        <p class="thank-you-message">Thank you for shopping with us! Your order will be delivered shortly.</p>
+
+        <div class="links">
+            <a href="/user/index" class="back-btn">
+                <i class="bi bi-arrow-left-circle"></i> Back to Home
+            </a>
+            <a href="/cart/myOrders" class="btn btn-secondary ">View Your Orders</a>
+        </div>
+    </div>
+        <script th:src="@{/js/login.js}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

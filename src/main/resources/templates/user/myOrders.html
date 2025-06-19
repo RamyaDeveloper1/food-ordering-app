@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Orders - FreshFusion</title>
+        <link rel="icon" href="/images/icon.png">
+        <link rel="stylesheet" href="/styles/style.css">
+        <link rel="stylesheet" href="/styles/MyOrder.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
+    </head>
+
+    <body>
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid clr">
+                <a class="navbar-brand" href="/user/index"><img src="/images/icon.png" width="40px">&nbsp;FreshFusion</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+
+                        <li class="nav-item me-5"><a class="nav-link active" href="/cart/myOrders">My Orders</a></li>
+                        <li class="nav-item me-5 ">
+                            <div class="dropdown-container">
+                                <a href="#" class="nav-link" data-bs-toggle="dropdown" aria-expanded="false">
+                                    My Account
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="/user/profile">Profile</a></li>
+                                    <li><a class="dropdown-item" href="" id="delete-account-trigger">Delete Account</a></li>
+                                    <li class="nav-item me-5"><a class="nav-link" id="logout-trigger" href="">Logout</a></li>
+
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a href="/cart/viewCart" class="nav-link"><img src="/images/cartIcon.png"
+                                                                                            width="30px" class="icon" alt="cartIcon">
+                                Cart</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+         <!-- Delete Account Popover -->
+        <div id="delete-account-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">Delete Account</h5>
+                        <p class="card-text">You are about to permanently delete your account. This action cannot be undone. Are you sure?</p>
+                        <form action="/user/dltAccount" method="POST" id="delete-account-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2" id="delete-account-trigger">Delete Account</button>
+                        </form>
+                        <a href="/cart/myOrders" class="btn btn-secondary btn-lg" id="cancel-delete">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Logout Popover-->
+        <div id="logout-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5">User Logout</h5>
+                        <p class="card-text">You are about to log out of your user account. Are you sure?</p>
+                        <form action="/user/logout" method="POST" id="logout-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2">Logout</button>
+                        </form>
+                        <a href="/cart/myOrders" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!-- Bike Image Section -->
+            <div class="col-md-3 bike">
+                <img src="/images/bike.png" alt="Bike Image" class="bike-img">
+            </div>
+
+            <!-- Center Section (My Orders) -->
+            <div class="col-md-6">
+                <div class="container">
+                    <h2 class="text-center mb-5 myOrders">My Orders</h2>
+
+                    <!-- Check if orders list is empty -->
+                    <th:block th:if="${orders.isEmpty()}">
+                        <p>You haven't placed any orders yet. Start exploring our menu!</p>
+                    </th:block>
+
+                    <!-- Iterate over the orders -->
+                    <th:block th:if="${not orders.isEmpty()}">
+                        <div th:each="order : ${orders}" class="order-card">
+                            <div class="order-card-header">
+                                <h5 class="fs-3">Order <span th:text="${order.orderId}"></span></h5>
+                                <span class="order-status" th:class="${order.orderStatus == 'Pending' ? 'status-pending' : 
+                                      order.orderStatus == 'Shipped' ? 'status-shipped' : 
+                                      order.orderStatus == 'Delivered' ? 'status-delivered' : 
+                                      'status-other'}" th:text="${order.orderStatus}"></span>
+                            </div>
+
+                            <div class="order-info p-4">
+                                <table class="table table-bordered order-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Order Date</th>
+                                            <th>Total</th>
+                                            <th>Shipping Address</th>
+                                            <th>Phone</th>
+                                            <th>City, Pincode</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td th:text="${order.orderId}"></td>
+                                            <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}"></td>
+                                            <td>₹<span th:text="${order.totalPrice}"></span></td>
+                                            <td th:text="${order.address}"></td>
+                                            <td th:text="${order.mobile}"></td>
+                                            <td><span th:text="${order.city}"></span>, <span th:text="${order.pincode}"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <!-- Check if the order has items -->
+                                <th:block th:if="${not #lists.isEmpty(order.orderItems)}">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Food Item</th>
+                                                <th>Price</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="item : ${order.orderItems}">
+                                                <td th:text="${item.foodName}"></td>
+                                                <td th:text="${item.price}"></td>
+                                                <td th:text="${item.quantity}"></td>
+                                                <td th:text="${item.totalPrice}"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </th:block>
+
+                                <!-- If no order items exist -->
+                                <th:block th:if="${#lists.isEmpty(order.orderItems)}">
+                                    <p>No items available for this order.</p>
+                                </th:block>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+            </div>
+
+
+            <!-- Cart Image Section -->
+            <div class="col-md-3 cart" style="margin-right: 10px;">
+                <img src="/images/busi3.png" alt="Cart Image" class="cart-img">
+            </div>
+        </div>
+
+        <div class="text-start ">
+            <a href="/user/index" class="back-btn ">
+                <i class="bi bi-arrow-left-circle"></i> Back to Home
+            </a>
+        </div>
+
+    <script th:src="@{/js/login.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FreshFusion</title>
+        <link rel="icon" href="/images/icon.png">
+        <link rel="stylesheet" href="/styles/style.css">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .box {
+                box-shadow: 10px 10px 20px grey;
+            }
+
+            .table th {
+                color: rgb(150, 25, 150);
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg ">
+            <div class="container-fluid clr ">
+                <a class="navbar-brand" href="/user/index">FreshFusion</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item me-5"><a class="nav-link" href="/user/index">Home</a></li>
+                        <li class="nav-item me-5"><a class="nav-link text-light" href="/admin/index">Dashboard</a>
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/category/viewCategory">Categories</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/users">Users</a></li>
+                        <li class="nav-item me-5"><a class="nav-link active text-light " href="/admin/orders">Orders</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/viewAdmins"> View Admins</a></li>
+                        <li class="nav-item me-5"><a class="nav-link"  id="logout-trigger" >Logout</a>    </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>   
+        <div id="logout-popover" class="d-none">
+            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                <div class="card mt-5" style="width: 18rem;">
+                    <div class="card-body text-center mt-5">
+                        <h5 class="card-title mt-5 ">Admin Logout</h5>
+                        <p class="card-text ">You are about to log out of your admin account. Are you sure?
+                        </p>
+
+                        <form action="/admin/adminlogout" method="POST" id="logout-form">
+                            <button type="submit" class="btn btn-danger btn-lg mb-2"><a>Logout</a></button>
+                        </form>
+
+                        <a href="/admin/orders" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container my-4 box">
+            <h2 class="mb-4 text-center p-2" style="color: rgb(150, 25, 150); font-weight: 600; font-size: 35px;">All Orders</h2>
+
+            <table class="table table-striped">
+                <thead class="table-secondary">
+                    <tr>
+                        <th scope="col">Order Id</th>
+                        <th scope="col">Food Details</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Delivery Address</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Update Status</th>
+                    </tr>
+                </thead>
+               <tbody>
+    <tr th:each="order, iterStat : ${orders}">
+        <th scope="row" th:text="${order.orderId}"></th>
+        
+        <!-- Loop through orderItems to display product details -->
+        <td>
+            <div th:each="orderItem : ${order.orderItems}">
+                <p th:text="${orderItem.foodName}">Food Name</p>
+                <p th:text="${orderItem.quantity}">Quantity</p>
+                <p th:text="${orderItem.price}">Price</p>
+            </div>
+        </td>
+        
+        <td th:text="${order.totalPrice}"></td>
+
+        <td>
+            Name: <span th:text="${order.name}"></span><br>
+            Email: <span th:text="${order.email}"></span><br>
+            Phone: <span th:text="${order.mobile}"></span><br>
+            Address: <span th:text="${order.address}"></span><br>
+            City: <span th:text="${order.city}"></span><br>
+            State: <span th:text="${order.state}"></span><br>
+            Pincode: <span th:text="${order.pincode}"></span>
+        </td>
+
+        <td th:text="${formattedOrderDates[iterStat.index]}"></td> 
+
+        <td th:text="${order.orderStatus}"></td>
+
+        <td>
+            <form th:action="@{/cart/updateOrderStatus}" method="POST">
+                <input type="hidden" name="orderId" th:value="${order.orderId}" />
+                <select name="status" class="form-control">
+                    <option th:value="'Pending'" th:selected="${order.orderStatus == 'Pending'}">Pending</option>
+                    <option th:value="'Shipped'" th:selected="${order.orderStatus == 'Shipped'}">Shipped</option>
+                    <option th:value="'Delivered'" th:selected="${order.orderStatus == 'Delivered'}">Delivered</option>
+                </select>
+                <button type="submit" class="btn btn-primary mt-2">Update</button>
+            </form>
+        </td>
+    </tr>
+</tbody>
+
+            </table>
+        </div>
+
+        <script th:src="@{/js/index.js}"></script>
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    </body>
+
+</html>

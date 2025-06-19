@@ -1,0 +1,135 @@
+
+.row {
+    display: flex;
+    height:70vh;
+    background-color: white;
+}
+.myOrders{
+    color: rgb(150, 25, 150);
+    font-weight: 500;
+    font-size: 2rem;
+}
+
+.bike-img, .cart-img {
+   width: 350px;
+ transition: all 0.5s ease-in-out; 
+}
+
+.bike {
+    position: relative;
+    animation: bike-left 2s forwards; 
+}
+
+.cart {
+    position: absolute;
+    animation: cart-right 2s forwards; 
+
+}
+
+@keyframes bike-left {
+    0% {
+        left: -300px; 
+    }
+    100% {
+        left: 10px;
+    }
+}
+
+@keyframes cart-right {
+    0% {
+        right: -300px; 
+    }
+    100% {
+        right: -10px;
+    }
+}
+.container{
+    margin-top: 20px;
+    animation: ani1 2s ease-in-out;
+    position: relative;
+}
+@keyframes ani1 {
+    0% {
+        bottom: -700px; 
+    }
+    100% {
+        bottom: 0;
+    }
+}
+.order-card {
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+.order-card-header {
+    background-color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 15px;
+    font-size: 1.1rem;
+}
+
+.order-status {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.status-pending {
+    background-color: #f39c12;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.status-shipped {
+    background-color: rgb(150, 25, 150);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.status-delivered {
+    background-color: #2ecc71;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+}
+
+.order-info p {
+    font-size: 1rem;
+    color: #555;
+}
+
+.order-info h5 {
+    color: #333;
+}
+
+.order-table th, .order-table td {
+    text-align: center;
+}
+
+.order-table thead {
+    font-weight: bold;
+}
+
+.empty-state {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    margin-top: 50px;
+}
+.back-btn{
+    position: sticky !important;
+    top:40%;
+}
+
+@media (max-width: 767px) {
+    .order-card-header {
+        font-size: 1rem;
+    }
+
+    .order-info p {
+        font-size: 0.9rem;
+    }
+}

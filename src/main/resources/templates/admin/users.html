@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>FreshFusion</title>
+        <link rel="icon" href="/images/icon.png">
+        <link rel="stylesheet" href="/styles/style.css">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .main{
+                box-shadow: 10px 10px 20px grey;
+            }
+
+            .table th{
+                color: rgb(150, 25, 150);
+            }
+
+
+        </style>
+    </head>
+    <body  >
+
+        <nav class="navbar navbar-expand-lg ">
+            <div class="container-fluid clr ">
+                <a class="navbar-brand" href="/admin/index">FreshFusion</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item me-5"><a class="nav-link" href="/user/index">Home</a></li>
+                        <li class="nav-item me-5"><a class="nav-link  text-light" href="/admin/index">Dashboard</a>
+                        </li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/category/viewCategory">Categories</a></li>
+                        <li class="nav-item me-5"><a class="nav-link active text-light" href="/admin/users">Users</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/orders">Orders</a></li>
+                        <li class="nav-item me-5"><a class="nav-link" href="/admin/viewAdmins"> View Admins</a></li>
+                        <li class="nav-item me-5"><a class="nav-link"  id="logout-trigger" >Logout</a>    </li>
+                        <div id="logout-popover" class="d-none">
+                            <div class="container d-flex justify-content-center align-items-center min-vh-100">
+                                <div class="card mt-5" style="width: 18rem;">
+                                    <div class="card-body text-center mt-5">
+                                        <h5 class="card-title mt-5 ">Admin Logout</h5>
+                                        <p class="card-text ">You are about to log out of your admin account. Are you sure?
+                                        </p>
+
+                                        <form action="/admin/adminlogout" method="POST" id="logout-form">
+                                            <button type="submit" class="btn btn-danger btn-lg mb-2"><a>Logout</a></button>
+                                        </form>
+
+                                        <a href="/admin/users" class="btn btn-secondary btn-lg" id="cancel-logout">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </nav>    
+
+        <!-- Main Content -->
+        <div class="container my-4 main">
+            <h2 class="mb-4 text-center p-2"  style="color: rgb(150, 25, 150); font-weight: 600; font-size: 35px;">All Users</h2>
+
+            <!-- Table -->
+            <table class="table table-striped">
+                <thead class="table-secondary">
+                    <tr>
+                        <th scope="col">User ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Phone No</th>
+                        <th scope="col">Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <tr th:each="user, iterStat : ${users}">
+    <th scope="row" th:text="${iterStat.count}"></th> 
+    <td th:text="${user.name}"></td>
+    <td th:text="${user.email}"></td>
+    <td th:text="${user.mobile}"></td>
+    <td>
+        <div>
+            <span th:text="${user.address}"></span>
+            <br>
+            <span th:text="${user.city}"></span>,
+            <span th:text="${user.state}"></span>
+            <br>
+            <span th:text="${user.pin}"></span>
+        </div>
+    </td>
+</tr>
+
+                </tbody>
+            </table>
+        </div>
+        
+        <script th:src="@{/js/index.js}"></script>
+
+        <!-- Bootstrap JS and dependencies -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+</html>
